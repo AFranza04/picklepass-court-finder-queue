@@ -27,7 +27,7 @@ export default function Register() {
 
   return (
     <div style={styles.container}>
-      <h2>PicklePass — Create Account</h2>
+      <h2>Create an Account</h2>
       {error && <p style={styles.error}>{error}</p>}
       <form onSubmit={handleSubmit} style={styles.form}>
         <input

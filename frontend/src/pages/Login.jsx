@@ -28,7 +28,7 @@ export default function Login() {
 
   return (
     <div style={styles.container}>
-      <h2>PicklePass — Login</h2>
+      <h2>Login into Picklepass</h2>
       {error && <p style={styles.error}>{error}</p>}
       <form onSubmit={handleLogin} style={styles.form}>
         <input
