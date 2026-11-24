@@ -23,6 +23,7 @@ export default function PlayerDashboard() {
     <div style={{ fontFamily: 'sans-serif', padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ddd', paddingBottom: '12px' }}>
         <h2>PicklePass | Player Dashboard</h2>
+        <Link to="/profile">Profile & Password Settings</Link>
         <div>
           <span style={{ marginRight: '15px' }}>{user.fullName} ({user.role})</span>
           <button onClick={handleLogout} style={{ padding: '8px 14px', backgroundColor: '#dc2626', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
