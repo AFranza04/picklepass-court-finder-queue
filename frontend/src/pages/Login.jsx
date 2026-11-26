@@ -48,6 +48,7 @@ export default function Login() {
           style={styles.input}
         />
         <button type="submit" style={styles.button}>Login</button>
+        <p><Link to="/forgot-password">Forgot your password?</Link></p>
       </form>
       <p>No account yet? <Link to="/register">Create an account</Link></p>
     </div>

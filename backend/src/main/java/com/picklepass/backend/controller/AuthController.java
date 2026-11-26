@@ -58,4 +58,52 @@ public class AuthController {
                 token, user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getRole().name()
         ));
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        User user = userRepository.findByEmail(request.getEmail().trim().toLowerCase())
+                .orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "No account found with that email address."));
+        }
+
+        String token = java.util.UUID.randomUUID().toString();
+        user.setResetToken(token);
+        user.setResetTokenExpiry(java.time.LocalDateTime.now().plusMinutes(15));
+        userRepository.save(user);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Password reset token generated. It expires in 15 minutes and can only be used once.",
+                "resetToken", token
+        ));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            return ResponseEntity.badRequest().body(Map.of("message", "New password and confirmation do not match."));
+        }
+
+        User user = userRepository.findByResetToken(request.getToken().trim())
+                .orElse(null);
+
+        if (user == null || user.getResetTokenExpiry() == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid or already used reset token."));
+        }
+
+        if (user.getResetTokenExpiry().isBefore(java.time.LocalDateTime.now())) {
+            user.setResetToken(null);
+            user.setResetTokenExpiry(null);
+            userRepository.save(user);
+            return ResponseEntity.badRequest().body(Map.of("message", "Reset token has expired. Please request a new one."));
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(Map.of("message", "Password has been reset successfully. You can now log in."));
+    }
 }
